@@ -133,8 +133,10 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+volatile uint32_t msTicks;
 void SysTick_Handler(void)
 {
+	msTicks++;
 	/*  TimingDelay_Decrement(); */
 #ifdef USE_STM32L_DISCOVERY
   TimingDelay_Decrement();

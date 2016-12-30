@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <pwm.h>
-
+#include <stdlib.h>
 
 void InitializeTimer()
 {
@@ -28,27 +28,28 @@ void InitializePWMChannel()
 {
     TIM_OCInitTypeDef outputChannelInit ;
     outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
-    outputChannelInit.TIM_Pulse = 400;
+    outputChannelInit.TIM_Pulse = 0;
     outputChannelInit.TIM_OutputState = TIM_OutputState_Enable;
     outputChannelInit.TIM_OCPolarity = TIM_OCPolarity_High;
 
     TIM_OC1Init(TIM4, &outputChannelInit);
     TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_TIM4);
+    TIM_ARRPreloadConfig(TIM4,ENABLE);
 }
 
 void InitializePWMChannel2()
 {
     TIM_OCInitTypeDef outputChannelInit ;
     outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
-    outputChannelInit.TIM_Pulse = 400;
+    outputChannelInit.TIM_Pulse = 0;
     outputChannelInit.TIM_OutputState = TIM_OutputState_Enable;
     outputChannelInit.TIM_OCPolarity = TIM_OCPolarity_High;
 
     TIM_OC3Init(TIM4, &outputChannelInit);
     TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_TIM4);
-
+    TIM_ARRPreloadConfig(TIM4,ENABLE);
 }
 
 void InitializeGPIO()

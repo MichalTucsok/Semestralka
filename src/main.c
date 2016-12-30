@@ -31,6 +31,7 @@ SOFTWARE.
 #include "stm32l1xx.h"
 #include <stdio.h>
 #include "konfiguracia.h"
+#include <pwm.h>
 /* Private typedef */
 /* Private define  */
 /* Private macro */
@@ -40,6 +41,23 @@ SOFTWARE.
 
 extern void (*TIM_Tvz_IRQ_Callback)(void);
 extern Struct_Of_Values sensors;
+
+
+volatile uint32_t msTicks;  //counts 1ms timeTicks
+//void SysTick_Handler(void){
+//	msTicks++;
+//}
+
+//Delays number of Systicks (happens every 1ms)
+static void Delaypwm(__IO uint32_t dlyTicks){
+	uint32_t curTicks = msTicks;
+	while ((msTicks-curTicks)<dlyTicks);
+}
+void setSysTick(void){
+	if(SysTick_Config(SystemCoreClock / 1000)){
+		while(1){}
+	}
+}
 
 /**
 **===========================================================================
@@ -54,10 +72,17 @@ int main(void)
 
 
 
-Init_GPIO();
-Init_USART();
-Init_ADC();
-Init_Timer_Tvz();
+
+//Init_GPIO();
+//Init_USART();
+//Init_ADC();
+//Init_Timer_Tvz();
+	setSysTick();
+	InitializeGPIO();
+	InitializeTimer();
+	InitializePWMChannel();
+	InitializePWMChannel2();
+
 
 char buffer[50];
 
@@ -84,9 +109,24 @@ char buffer[50];
   /* Infinite loop */
 		while (1)
 			{
-				sprintf(buffer,"Right->%d\n\rLeft->%d\n\r",sensors.Right_Sensor,sensors.Left_Sensor);
-				Send_Buffer(buffer);
-				Delay(500000);
+				//sprintf(buffer,"Right->%d\n\rLeft->%d\n\r",sensors.Right_Sensor,sensors.Left_Sensor);
+				//Send_Buffer(buffer);
+				//Delay(500000);
+
+
+
+
+						TIM4->CCR1 = 1;
+						TIM4->CCR3 = 1;
+						Delaypwm(700);
+						TIM4->CCR1 = 0;
+						TIM4->CCR3 = 0;
+						Delaypwm(700);
+						//TIM4->CCR3 = 90;
+
+
+
+
 			}
 			return 0;
 }
