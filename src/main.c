@@ -73,10 +73,10 @@ int main(void)
 
 
 
-//Init_GPIO();
-//Init_USART();
-//Init_ADC();
-//Init_Timer_Tvz();
+Init_GPIO();
+Init_USART();
+Init_ADC();
+Init_Timer_Tvz();
 	setSysTick();
 	InitializeGPIO();
 	InitializeTimer();
@@ -85,45 +85,91 @@ int main(void)
 
 
 char buffer[50];
+long motor_pravy = 0;
+long motor_lavy = 0;
+long naj_lavy = 250;
+long naj_pravy = 250;
+long najv_lavy = 3500;
+long najv_pravy = 3500;
+int rozdiel = 0;
+int r=0;
 
-  /**
-  *  IMPORTANT NOTE!
-  *  See the <system_*.c> file and how/if the SystemInit() function updates 
-  *  SCB->VTOR register. Sometimes the symbol VECT_TAB_SRAM needs to be defined 
-  *  when building the project if code has been located to RAM and interrupts 
-  *  are used. Otherwise the interrupt table located in flash will be used.
-  *  E.g.  SCB->VTOR = 0x20000000;  
-  */
+				/*TIM4->CCR1 = 500;
+				Delaypwm(100);
+				TIM4->CCR3 = 1000;*/
 
-  /**
-  *  At this stage the microcontroller clock setting is already configured,
-  *  this is done through SystemInit() function which is called from startup
-  *  file (startup_stm32l1xx_hd.s) before to branch to application main.
-  *  To reconfigure the default setting of SystemInit() function, refer to
-  *  system_stm32l1xx.c file
-  */
-
-  /* TODO - Add your application code here */
-
-
-  /* Infinite loop */
 		while (1)
 			{
-				//sprintf(buffer,"Right->%d\n\rLeft->%d\n\r",sensors.Right_Sensor,sensors.Left_Sensor);
-				//Send_Buffer(buffer);
-				//Delay(500000);
+
+			/*if(sensors.Right_Sensor>0 && sensors.Right_Sensor<naj_pravy)
+			{
+				naj_pravy = sensors.Right_Sensor;
+			}
+			if(sensors.Left_Sensor>0 && sensors.Left_Sensor<naj_lavy)
+			{
+				naj_lavy = sensors.Left_Sensor;
+			}
+
+			if(sensors.Right_Sensor>najv_pravy)
+			{
+				najv_pravy = sensors.Right_Sensor;
+			}
+			if(sensors.Left_Sensor>najv_lavy)
+			{
+				najv_lavy = sensors.Left_Sensor;
+			}*/
+
+			motor_pravy = ((sensors.Right_Sensor - naj_pravy)*(1000-300))/(najv_pravy-naj_pravy);
+			motor_lavy = ((sensors.Left_Sensor - naj_lavy)*(1000-300))/(najv_lavy-naj_lavy);
+
+			rozdiel = motor_pravy - motor_lavy;
+
+
+			if(r==0){
+			TIM4->CCR1 = 1600;
+			Delaypwm(200);
+			TIM4->CCR3 = 1400;
+			r=1;}
+
+
+			if( rozdiel <= 70 && rozdiel >= -70)
+			{
+				TIM4->CCR1 = 1200;
+				TIM4->CCR3 = 1800;
+				Delaypwm(100);
+			}
+
+			if(rozdiel > 70 )
+			{
+				TIM4->CCR1 = 1200;
+				TIM4->CCR3 = 1200;
+				Delaypwm(100);
+					//sprintf(buffer,"pravy");
+					//Send_Buffer(buffer);
+					//Delay(800000);
+			}
+
+			if (rozdiel < -70)
+			{
+				TIM4->CCR3 = 1800;
+				TIM4->CCR1 = 1800;
+				Delaypwm(100);
+					//sprintf(buffer,"lavy");
+					//Send_Buffer(buffer);
+					//Delay(800000);
+			}
 
 
 
-
-						TIM4->CCR1 = 1;
-						TIM4->CCR3 = 1;
-						Delaypwm(700);
-						TIM4->CCR1 = 0;
-						TIM4->CCR3 = 0;
-						Delaypwm(700);
-						//TIM4->CCR3 = 90;
-
+			//sprintf(buffer,"Right->%d\n\rLeft->%d\n\r",sensors.Right_Sensor,sensors.Left_Sensor);
+			//Send_Buffer(buffer);
+			//Delay(800000);
+			//sprintf(buffer,"pravy motor->%d\n\rlavy motor->%d\n\r",motor_pravy, motor_lavy);
+			//Send_Buffer(buffer);
+			//Delay(800000);
+			sprintf(buffer,"rozdiel->%d\n\r",rozdiel);
+			Send_Buffer(buffer);
+						Delay(800000);
 
 
 
