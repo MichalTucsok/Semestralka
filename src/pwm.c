@@ -18,7 +18,7 @@ void InitializeTimer()
     TIM_TimeBaseInitTypeDef timerInitStructure;
     timerInitStructure.TIM_Prescaler = 16-1;
     timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    timerInitStructure.TIM_Period = 19999;
+    timerInitStructure.TIM_Period = 1999;
     timerInitStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseInit(TIM4, &timerInitStructure);
     TIM_Cmd(TIM4, ENABLE);
@@ -28,7 +28,7 @@ void InitializePWMChannel()
 {
     TIM_OCInitTypeDef outputChannelInit ;
     outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
-    outputChannelInit.TIM_Pulse = 800;
+    outputChannelInit.TIM_Pulse = 0;
     outputChannelInit.TIM_OutputState = TIM_OutputState_Enable;
     outputChannelInit.TIM_OCPolarity = TIM_OCPolarity_High;
 
@@ -42,7 +42,7 @@ void InitializePWMChannel2()
 {
     TIM_OCInitTypeDef outputChannelInit ;
     outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
-    outputChannelInit.TIM_Pulse = 800;
+    outputChannelInit.TIM_Pulse = 0;
     outputChannelInit.TIM_OutputState = TIM_OutputState_Enable;
     outputChannelInit.TIM_OCPolarity = TIM_OCPolarity_High;
 
