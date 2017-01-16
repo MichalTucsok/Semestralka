@@ -12,5 +12,5 @@ void InitializeTimer();
 void InitializePWMChannel();
 void InitializePWMChannel2();
 void InitializeGPIO();
-
+void sysClockSetup();
 #endif /* PWM_H_ */

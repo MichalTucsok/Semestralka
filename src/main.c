@@ -72,7 +72,7 @@ int main(void)
 
 
 
-
+sysClockSetup();
 Init_GPIO();
 Init_USART();
 Init_ADC();
@@ -92,79 +92,60 @@ long naj_pravy = 250;
 long najv_lavy = 3500;
 long najv_pravy = 3500;
 int rozdiel = 0;
+int sucet =0;
 int r=0;
+int rychlost1=1495;
+int rychlost3=1490;
 
-				/*TIM4->CCR1 = 500;
-				Delaypwm(100);
-				TIM4->CCR3 = 1000;*/
-/*
-			TIM4->CCR1 = 1;
-			TIM4->CCR3 = 1800;
-			Delaypwm(1000);
-			TIM4->CCR1 = 0;
-			TIM4->CCR3 = 0;
-			Delaypwm(1000);
-*/
+
 		while (1)
 			{
 
-			/*if(sensors.Right_Sensor>0 && sensors.Right_Sensor<naj_pravy)
-			{
-				naj_pravy = sensors.Right_Sensor;
-			}
-			if(sensors.Left_Sensor>0 && sensors.Left_Sensor<naj_lavy)
-			{
-				naj_lavy = sensors.Left_Sensor;
-			}
 
-			if(sensors.Right_Sensor>najv_pravy)
-			{
-				najv_pravy = sensors.Right_Sensor;
-			}
-			if(sensors.Left_Sensor>najv_lavy)
-			{
-				najv_lavy = sensors.Left_Sensor;
-			}*/
 
 			motor_pravy = ((sensors.Right_Sensor - naj_pravy)*(1000-300))/(najv_pravy-naj_pravy);
 			motor_lavy = ((sensors.Left_Sensor - naj_lavy)*(1000-300))/(najv_lavy-naj_lavy);
 
 			rozdiel = motor_pravy - motor_lavy;
 
-
-			/*if(r==0){
-			TIM4->CCR1 = 1600;
-			TIM4->CCR3 = 1600;
-			Delaypwm(500);
-			r=1;} */
+			sucet = motor_pravy + motor_lavy;
 
 
+
+			 if(sucet>300 && sucet<=600){
+					 rychlost1=10+1495;
+					 rychlost3=-10+1490;
+			 }
+			 else if (sucet>600){
+				 rychlost1=20+1495;
+				 rychlost3=-20+1490;
+			 }
+			 else if (sucet<=300){
+				 rychlost1=1495;
+				 rychlost3=1490;
+			 }
 
 			if( rozdiel <= 70 && rozdiel >= -70)
 			{
-				TIM4->CCR1 = 0;
-				TIM4->CCR3 = 0; //1800
-				Delaypwm(100);
+				TIM4->CCR1 = rychlost1; //1495 stred
+				TIM4->CCR3 = rychlost3; //1490 stred
+
 			}
 
 			if(rozdiel > 70 )
 			{
-				TIM4->CCR1 = 1800;
-				TIM4->CCR3 = 0; //1200
-				Delaypwm(100);
-					//sprintf(buffer,"pravy");
-					//Send_Buffer(buffer);
-					//Delay(800000);
+				TIM4->CCR1 = rychlost1+(rozdiel/10);
+				TIM4->CCR3 = rychlost3; //1200
+
+
 			}
 
 			if (rozdiel < -70)
 			{
-				TIM4->CCR3 = 1200; //1800
-				TIM4->CCR1 = 0;
-				Delaypwm(100);
-					//sprintf(buffer,"lavy");
-					//Send_Buffer(buffer);
-					//Delay(800000);
+				TIM4->CCR3 = rychlost3+(rozdiel/10); //1800
+				TIM4->CCR1 = rychlost1;
+
+
 			}
 
 
@@ -175,7 +156,7 @@ int r=0;
 			//sprintf(buffer,"pravy motor->%d\n\rlavy motor->%d\n\r",motor_pravy, motor_lavy);
 			//Send_Buffer(buffer);
 			//Delay(800000);
-			sprintf(buffer,"rozdiel->%d\n\r",rozdiel);
+			sprintf(buffer,"sucet->%d\n\r",sucet);
 			Send_Buffer(buffer);
 						Delay(800000);
 
