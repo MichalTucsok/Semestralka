@@ -97,7 +97,14 @@ int r=0;
 				/*TIM4->CCR1 = 500;
 				Delaypwm(100);
 				TIM4->CCR3 = 1000;*/
-
+/*
+			TIM4->CCR1 = 1;
+			TIM4->CCR3 = 1800;
+			Delaypwm(1000);
+			TIM4->CCR1 = 0;
+			TIM4->CCR3 = 0;
+			Delaypwm(1000);
+*/
 		while (1)
 			{
 
@@ -125,24 +132,25 @@ int r=0;
 			rozdiel = motor_pravy - motor_lavy;
 
 
-			if(r==0){
+			/*if(r==0){
 			TIM4->CCR1 = 1600;
-			Delaypwm(200);
-			TIM4->CCR3 = 1400;
-			r=1;}
+			TIM4->CCR3 = 1600;
+			Delaypwm(500);
+			r=1;} */
+
 
 
 			if( rozdiel <= 70 && rozdiel >= -70)
 			{
-				TIM4->CCR1 = 1200;
-				TIM4->CCR3 = 1800;
+				TIM4->CCR1 = 0;
+				TIM4->CCR3 = 0; //1800
 				Delaypwm(100);
 			}
 
 			if(rozdiel > 70 )
 			{
-				TIM4->CCR1 = 1200;
-				TIM4->CCR3 = 1200;
+				TIM4->CCR1 = 1800;
+				TIM4->CCR3 = 0; //1200
 				Delaypwm(100);
 					//sprintf(buffer,"pravy");
 					//Send_Buffer(buffer);
@@ -151,8 +159,8 @@ int r=0;
 
 			if (rozdiel < -70)
 			{
-				TIM4->CCR3 = 1800;
-				TIM4->CCR1 = 1800;
+				TIM4->CCR3 = 1200; //1800
+				TIM4->CCR1 = 0;
 				Delaypwm(100);
 					//sprintf(buffer,"lavy");
 					//Send_Buffer(buffer);
